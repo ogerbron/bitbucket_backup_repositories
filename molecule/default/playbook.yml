@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: bitbucket_backup_repositories
+      vars:
+        bitbucket_password: "test"
+        bitbucket_user: "test"
+        bitbucket_workspace: "test"

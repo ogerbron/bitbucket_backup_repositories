@@ -1,0 +1,19 @@
+- name: bitbucket_backup_repositories | Checking bitbucket_git_version variable
+  fail:
+    msg: "You must specify a git version (master?) with variable bitbucket_git_version"
+  when: not bitbucket_git_version
+
+- name: bitbucket_backup_repositories | Checking bitbucket_password variable
+  fail:
+    msg: "You must specify a password with variable bitbucket_password"
+  when: not bitbucket_password
+
+- name: bitbucket_backup_repositories | Checking bitbucket_user variable
+  fail:
+    msg: "You must specify a user with variable bitbucket_user"
+  when: not bitbucket_user
+
+- name: bitbucket_backup_repositories | Checking bitbucket_workspace variable
+  fail:
+    msg: "You must specify a workspace with variable bitbucket_workspace"
+  when: not bitbucket_workspace

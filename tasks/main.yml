@@ -1,0 +1,47 @@
+---
+# tasks file for bitbucket_backup_repositories
+- name: bitbucket_backup_repositories | Check variables
+  include_tasks:
+    file: checks.yml
+
+- name: bitbucket_backup_repositories | Get all repos
+  include_tasks:
+    file: bitbucket_get_all_repositories.yml
+  loop:
+  - "{{ bitbucket_api_url }}/2.0/repositories/{{ bitbucket_workspace }}"
+  loop_control:
+    loop_var: url
+
+- name: bitbucket_backup_repositories | Display the list of repositories we found
+  debug:
+    msg: "Got the following repos from bitbucket {{ repo_output | sort }}"
+
+- name: bitbucket_backup_repositories | bitbucket_backup_repositories | Remove excluded repositories from the list
+  block:
+  - name: bitbucket_backup_repositories | Debug message
+    debug:
+      msg: "Got a list of repositories to exclude: {{ bitbucket_exclude_repos_list }}"
+
+  - name: bitbucket_backup_repositories | Remove the excluded repositories
+    set_fact:
+      repo_output: "{{ repo_output | difference(bitbucket_exclude_repos_list) }}"
+  when: bitbucket_exclude_repos_list | length > 0
+
+- name: bitbucket_backup_repositories | Get all repos by cloning them
+  include_tasks:
+    file: git_clone_repository.yml
+  loop: "{{ repo_output | sort | list }}"
+  loop_control:
+    loop_var: repo
+
+- name: bitbucket_backup_repositories | Archive all the repositories
+  archive:
+    path: /tmp/git_repos
+    dest: /tmp/git_repos.tgz
+
+- name: bitbucket_backup_repositories | Clean up the cloned repositories
+  file:
+    path: "/tmp/git_repos"
+    state: absent
+  # For the sake of idempotency
+  changed_when: false

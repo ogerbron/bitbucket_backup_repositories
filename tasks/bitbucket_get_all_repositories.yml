@@ -1,0 +1,27 @@
+- name: bitbucket_backup_repositories | Get repo list
+  uri:
+    url: "{{ url }}"
+    method: GET
+    status_code: "200"
+    user: "{{ bitbucket_user }}"
+    password: "{{ bitbucket_password }}"
+    validate_certs: no
+    force_basic_auth: yes
+  register: bitbucket_all_repo_output
+
+- name: bitbucket_backup_repositories | Set output
+  set_fact:
+    repo_output: "{{ repo_output | union(bitbucket_all_repo_output.json | to_json | from_json | json_query('values[*].slug')) }}"
+
+- name: bitbucket_backup_repositories | debug message for next page
+  debug:
+    msg: "Found a next page, will make a recursive call with url {{ bitbucket_all_repo_output.json.next }}"
+  when: bitbucket_all_repo_output.json.next is defined
+
+- include_tasks:
+    file: bitbucket_get_all_repositories.yml
+  loop:
+    - "{{ bitbucket_all_repo_output.json.next }}"
+  loop_control:
+    loop_var: url
+  when: bitbucket_all_repo_output.json.next is defined

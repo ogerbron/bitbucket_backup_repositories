@@ -1,0 +1,9 @@
+---
+# defaults file for bitbucket_backup_repositories
+bitbucket_api_url: "https://api.bitbucket.org"
+bitbucket_password: ""
+bitbucket_user: ""
+bitbucket_workspace: ""
+
+bitbucket_exclude_repos_list: []
+bitbucket_git_version: "HEAD"

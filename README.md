@@ -11,24 +11,37 @@ Backup all repositories of a given team/user using Bitbucket API.
 Requirements
 ------------
 
-
+None
 
 Role Variables
 --------------
 
-
+| Variable name                  | Required | Default                   | Choices                                         | Comments |
+|--------------------------------|:--------:|:-------------------------:|:------------------------------------------------|:---------|
+| `bitbucket_api_url`            | no       | https://api.bitbucket.org | HTTP URL                                        |  |
+| `bitbucket_exclude_repos_list` | no       | []                        | A list of repositories                          | Some repositories you would like to exclude from the backup |
+| `bitbucket_git_version`        | no       | HEAD                      | A git version, branch, commit, etc.             | See [Ansible git module](https://docs.ansible.com/ansible/latest/modules/git_module.html#parameter-version) |
+| `bitbucket_password`           | yes      | None                      | The user's password |  |
+| `bitbucket_user`               | yes      | None                      | The user to connect to bitbucket                |  |
+| `bitbucket_workspace`          | yes      | None                      | The workspace you want to backup                | The bitbucket team or username in which the repositories are located |
 
 Dependencies
 ------------
 
+None
 
 Example Playbook
 ----------------
 
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: backup_server
+  roles:
+  - role: bitbucket_backup_repositories
+    vars:
+      bitbucket_password: "test"
+      bitbucket_user: "test"
+      bitbucket_workspace: "test"
+```
 
 License
 -------
